@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rajasekhar's Live Weather</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./whether.css">
+
+    <style>
+        .forecastRow, .todaytemp {
+            border: none !important;
+            padding-bottom: 0 !important;
+            margin-bottom: 5px !important;
+            background: transparent !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="searchBar">
+        <div class="searchBarParentDiv">
+            <input type="text" class="inputfield" placeholder="Search City">
+            <img src="./searching-clipart-4.jpg" alt="Search" width="35px" class="searchIcon" onclick="fetchData()">
+        </div>
+    </div>
+    <div class="mainContentParentDiv d-flex">
+        <div class="leftDiv">
+            <div class="currentTempDiv leftChild p-3 d-flex flex-column gap-2">
+                <h6 class="m-0" id="cityName">City Name</h6>
+                <h5 class="m-0"><span id="cityTemp">-</span> °C</h5>
+                <h6 class="m-0" id="skyDesc">Sky Description</h6>
+                <div class="d-flex gap-2">
+                    <img src="./WhatsApp Image 2025-03-18 at 11.31.41_b75af09d.jpg" alt="Date" width="25px">
+                    <h6 class="m-0" id="date">Date</h6>
+                </div>
+                <div class="d-flex gap-2">
+                    <img src="./WhatsApp Image 2025-03-18 at 11.31.39_5e8a58c7.jpg" alt="Time" width="25px">
+                    <h6 class="m-0" id="time">Time</h6>
+                </div>
+            </div>
+            <div class="nextFiveDays leftChild p-3 d-flex flex-column gap-2">
+                <h6 class="m-0" id="comingFiveDaysTitle">Coming 5 Days</h6>
+                <div id="forecastContainer" class="d-flex flex-column gap-1"></div>
+            </div>
+        </div>
+        <div class="rightDiv">
+            <div class="rightRow rowOne d-flex gap-2 justify-content-between align-items-center">
+                <div class="extraMetric d-flex gap-3">
+                    <img src="./WhatsApp Image 2025-03-18 at 11.31.37_2af09579.jpg" alt="Humidity" width="35px">
+                    <div>
+                        <h6 class="m-0">Humidity</h6>
+                        <h6 class="m-0" id="humidity">-</h6>
+                    </div>
+                </div>
+                <div class="extraMetric d-flex gap-3">
+                    <img src="./WhatsApp Image 2025-03-18 at 11.31.40_30a6c641.jpg" alt="Pressure" width="35px">
+                    <div>
+                        <h6 class="m-0">Pressure</h6>
+                        <h6 class="m-0" id="pressure">-</h6>
+                    </div>
+                </div>
+                <div class="extraMetric d-flex gap-3">
+                    <img src="./WhatsApp Image 2025-03-18 at 11.31.37_275de2e5.jpg" alt="Feels Like" width="35px">
+                    <div>
+                        <h6 class="m-0">Feels Like</h6>
+                        <h6 class="m-0" id="feelsLike">-</h6>
+                    </div>
+                </div>
+                <div class="extraMetric d-flex gap-3">
+                    <img src="./WhatsApp Image 2025-03-18 at 11.31.37_58072e7b.jpg" alt="Visibility" width="35px">
+                    <div>
+                        <h6 class="m-0">Visibility</h6>
+                        <h6 class="m-0" id="visibility">-</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="rightRow rowTwo d-flex justify-content-between align-items-center">
+                <div class="AQI rowTwoDiv p-3 d-flex flex-column gap-2">
+                    <h5>Air Quality Index (AQI)</h5>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <img src="./WhatsApp Image 2025-03-18 at 11.31.40_c2355204.jpg" alt="AQI" width="40px">
+                        <div class="text-center">
+                            <h6 id="co">CO</h6>
+                            <h6 id="coValue">-</h6>
+                        </div>
+                        <div class="text-center">
+                            <h6 id="so2">SO2</h6>
+                            <h6 id="so2Value">-</h6>
+                        </div>
+                        <div class="text-center">
+                            <h6 id="o3">O3</h6>
+                            <h6 id="o3Value">-</h6>
+                        </div>
+                        <div class="text-center">
+                            <h6 id="no2">NO2</h6>
+                            <h6 id="no2Value">-</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="sunRise rowTwoDiv p-3 gap-2">
+                    <h5 class="m-0">Sunrise & Sunset</h5>
+                    <div class="d-flex justify-content-between">
+                        <div class="sunriseDiv d-flex gap-2 align-items-center">
+                            <img src="./sun.png.jpg" alt="Sunrise" width="50px">
+                            <div class="d-flex flex-column gap-1">
+                                <h6 class="m-0">Sunrise</h6>
+                                <h5 class="m-0" id="sunriseTime">-:-- AM</h5>
+                            </div>
+                        </div>
+                        <div class="sunsetDiv d-flex gap-2 align-items-center">
+                            <img src="./WhatsApp Image 2025-03-18 at 11.31.38_3fb5f2a4.jpg" alt="Sunset" width="65px">
+                            <div class="d-flex flex-column gap-2">
+                                <h6 class="m-0">Sunset</h6>
+                                <h5 class="m-0" id="sunsetTime">-:-- PM</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="rightRow rowThree d-flex flex-column gap-2">
+                <h5 class="m-0">Today</h5>
+                <div class="d-flex justify-content-between todayTempParentDiv" id="todayTempContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+    <script>
+        // Utility function to format timestamp to local date and time (for API timestamps)
+        function dateFormat(timestamp) {
+            return new Date(timestamp * 1000).toLocaleString();
+        }
+
+        // Function to get and format today's date and time
+        function getCurrentDateTime() {
+            const now = new Date();
+            const date = now.toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+            const time = now.toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true
+            });
+            return { date, time };
+        }
+
+        // Fetch Air Quality Index data
+        async function fetchAQIData(lat, lon) {
+            const apiKey = "d14653345952b2d1c0d566344a4fb0ff";
+            try {
+                const response = await fetch(
+                    `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`
+                );
+                if (!response.ok) throw new Error("Failed to fetch AQI data");
+                const data = await response.json();
+                const components = data.list[0].components;
+
+                $("#coValue")[0].innerText = `${components.co} µg/m³`;
+                $("#so2Value")[0].innerText = `${components.so2} µg/m³`;
+                $("#o3Value")[0].innerText = `${components.o3} µg/m³`;
+                $("#no2Value")[0].innerText = `${components.no2} µg/m³`;
+            } catch (error) {
+                console.error("AQI Fetch Error:", error);
+                $("#coValue, #so2Value, #o3Value, #no2Value").text("N/A");
+            }
+        }
+
+        // Fetch 5-day forecast
+        async function nextFiveDays(lat, lon) {
+            const apiKey = "d14653345952b2d1c0d566344a4fb0ff";
+            const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Failed to fetch forecast data");
+                const data = await response.json();
+
+                let dailyForecasts = {};
+                data.list.forEach(item => {
+                    const date = item.dt_txt.split(" ")[0];
+                    if (!dailyForecasts[date]) {
+                        dailyForecasts[date] = {
+                            temp: item.main.temp.toFixed(1),
+                            icon: item.weather[0].icon,
+                            day: new Date(date).toLocaleDateString("en-US", { weekday: "long" })
+                        };
+                    }
+                });
+
+                let forecastHtml = "";
+                Object.keys(dailyForecasts).slice(0, 5).forEach(date => {
+                    const forecast = dailyForecasts[date];
+                    forecastHtml += `
+                        <div class="forecastRow d-flex align-items-center justify-content-between">
+                            <div class="d-flex gap-1 align-items-center">
+                                <img src="http://openweathermap.org/img/wn/${forecast.icon}.png" alt="Weather" width="35px">
+                                <h6 class="m-0">${forecast.temp} °C</h6>
+                            </div>
+                            <h6 class="m-0">${forecast.day}</h6>
+                            <h6 class="m-0">${date}</h6>
+                        </div>
+                    `;
+                });
+                document.getElementById("forecastContainer").innerHTML = forecastHtml;
+            } catch (error) {
+                console.error("Forecast Error:", error);
+                document.getElementById("forecastContainer").innerHTML = "<p>Failed to load forecast.</p>";
+            }
+        }
+
+        // Fetch today's hourly temperatures
+        async function todayTemps(lat, lon) {
+            const apiKey = "d14653345952b2d1c0d566344a4fb0ff";
+            const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Failed to fetch hourly data");
+                const data = await response.json();
+
+                const todayDate = new Date().toISOString().split("T")[0];
+                const todayForecasts = data.list.filter(item => item.dt_txt.startsWith(todayDate)).slice(0, 6);
+
+                let todayHtml = "";
+                todayForecasts.forEach(item => {
+                    const time = new Date(item.dt_txt).toLocaleTimeString("en-US", {
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true
+                    });
+                    const temp = item.main.temp.toFixed(1);
+                    const icon = item.weather[0].icon;
+
+                    todayHtml += `
+                        <div class="todaytemp">
+                            <h6 class="m-0">${time}</h6>
+                            <img src="http://openweathermap.org/img/wn/${icon}.png" alt="Weather" width="35px">
+                            <h5>${temp}°C</h5>
+                        </div>
+                    `;
+                });
+                document.getElementById("todayTempContainer").innerHTML = todayHtml;
+            } catch (error) {
+                console.error("Hourly Error:", error);
+                document.getElementById("todayTempContainer").innerHTML = "<p>Failed to load hourly data.</p>";
+            }
+        }
+
+        // Main function to fetch all weather data
+        async function fetchData() {
+            const cityName = document.querySelector(".inputfield").value.trim();
+            if (!cityName) {
+                alert("Please enter a city name.");
+                return;
+            }
+
+            const apiKey = "d14653345952b2d1c0d566344a4fb0ff";
+            try {
+                const weatherResponse = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`
+                );
+                if (!weatherResponse.ok) throw new Error("City not found or invalid request");
+                const weatherData = await weatherResponse.json();
+
+                // Update current weather details
+                $("#cityName")[0].innerText = weatherData.name;
+                $("#cityTemp")[0].innerText = weatherData.main.temp.toFixed(1);
+                $("#skyDesc")[0].innerText = weatherData.weather[0].description;
+                $("#humidity")[0].innerText = `${weatherData.main.humidity}%`;
+                $("#pressure")[0].innerText = `${weatherData.main.pressure} hPa`;
+                $("#feelsLike")[0].innerText = `${weatherData.main.feels_like.toFixed(1)} °C`;
+                $("#visibility")[0].innerText = `${(weatherData.visibility / 1000).toFixed(1)} km`;
+
+                // Update today's date and time (using local system time)
+                const { date, time } = getCurrentDateTime();
+                $("#date")[0].innerText = date;
+                $("#time")[0].innerText = time;
+
+                // Update sunrise and sunset
+                $("#sunriseTime")[0].innerText = dateFormat(weatherData.sys.sunrise).split(",")[1].trim();
+                $("#sunsetTime")[0].innerText = dateFormat(weatherData.sys.sunset).split(",")[1].trim();
+
+                // Fetch additional data using coordinates
+                const lat = weatherData.coord.lat;
+                const lon = weatherData.coord.lon;
+                await Promise.all([
+                    fetchAQIData(lat, lon),
+                    nextFiveDays(lat, lon),
+                    todayTemps(lat, lon)
+                ]);
+            } catch (error) {
+                console.error("Weather Fetch Error:", error);
+                alert("Failed to retrieve weather data. Please check the city name or API key.");
+            }
+        }
+
+        // Initialize date and time on page load
+        window.onload = function() {
+            const { date, time } = getCurrentDateTime();
+            $("#date")[0].innerText = date;
+            $("#time")[0].innerText = time;
+        };
+    </script>
+</body>
+</html>
